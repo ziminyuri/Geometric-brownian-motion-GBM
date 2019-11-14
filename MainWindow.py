@@ -61,12 +61,24 @@ class MainWindow(Frame):
     def click_button_add_model(self):
         a = Toplevel()
         a.title('Добавить график')
-        a.geometry('900x500')
+        a.geometry('300x200')
 
-        b1 = Button(a, text="Добавить", command=lambda: self.click_button_add(), width="15", height="2")
-        b1.place(x=600, y=450)
-        b2 = Button(a, text="Закрыть", command=self.click_button_close, width="15", height="2")
-        b2.place(x=750, y=450)
+        # Ввод n
+        label_n = Label(a, text="Количество значений", height=1, width=18, font='Arial 14')
+        label_n.place(x=10, y=10)
+        self.input_n = Entry(a, width=15)
+        self.input_n.place(x=10, y=30)
+
+        # Ввод c
+        label_c = Label(a, text="Введите с", height=1, width=9, font='Arial 14')
+        label_c.place(x=10, y=60)
+        self.input_c = Entry(a, width=15)
+        self.input_c.place(x=10, y=80)
+
+        b1 = Button(a, text="Добавить", command=lambda: self.click_button_add(), width="13", height="2")
+        b1.place(x=40, y=150)
+        b2 = Button(a, text="Закрыть", command=self.click_button_close, width="13", height="2")
+        b2.place(x=170, y=150)
 
         a.grab_set()  # Перехватывает все события происходящие в приложении
         a.focus_set()  # Захватывает и удерживает фокус
