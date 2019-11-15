@@ -3,6 +3,8 @@ from tkinter import messagebox, ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
+from model import Model
+
 
 class MainWindow(Frame):
     def __init__(self, root):
@@ -51,7 +53,26 @@ class MainWindow(Frame):
 
     # Обработчик нажатия на клавишу "Добавить" в окне добавления графика
     def click_button_add(self):
-        pass
+
+        c = self.input_c.get()
+        n = self.input_n.get()
+
+        if c != '':
+            c = float(c)
+        else:
+            c = 1
+
+        if n != "":
+            n = int(n)
+        else:
+            n = 1000
+
+        model = Model(c, n)
+        model.calculation()
+        model.normalisation_axis()
+        model.graph = 1
+
+        self.draw_graph(model)
 
     # Обработчик нажатия на клавишу "Закрыть" в окне добавления графика
     def click_button_close(self):
@@ -83,7 +104,6 @@ class MainWindow(Frame):
         a.grab_set()  # Перехватывает все события происходящие в приложении
         a.focus_set()  # Захватывает и удерживает фокус
 
-
     def get_model(self, number_of_trend):
         for i in self.graph:
             g = i.graph
@@ -93,9 +113,9 @@ class MainWindow(Frame):
     def draw_graph(self, model):
 
         chart_number = str(model.graph)
-        x = model.display_n
-        y_min = model.axis_min
-        y_max = model.axis_max
+        x = model.n
+        y_min = model.y_axis_min
+        y_max = model.y_axis_max
 
         x_list = model.x
         y_list = model.y
