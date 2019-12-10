@@ -3,12 +3,9 @@ from MainWindow import MainWindow
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-import csv
 
 
-
-
-def main1():
+def main():
     root = Tk()
     app = MainWindow(root)
     app.pack()
@@ -18,7 +15,7 @@ def main1():
     root.mainloop()
 
 
-def main():
+def main1():
     T = 2
     mu = 0.01
     sigma = 0.01
@@ -85,29 +82,6 @@ def main2():
     plt.plot(t, S)
     plt.show()
 
-    def import_rts_value():
-        filename = "input_files/SPFB.RTS_161210_191210 (1).csv"
-
-        cost_rts = []
-        date_rts = []
-
-        csv.register_dialect('pipes', delimiter=';')
-        with open(filename, 'r', newline='') as csv_file:
-            reader = csv.reader(csv_file, dialect='pipes')
-
-            for row in reader:
-                try:
-                    r = float(row[2])
-                    cost_rts.append(r)
-                    date_rts.append(row[0])
-                except:
-                    pass
-
-        print(cost_rts)
-        print(date_rts)
-
-        return cost_rts, date_rts
-
 
 if __name__ == '__main__':
-    import_rts_value()
+    main()

@@ -49,27 +49,34 @@ class MainWindow(Frame):
         b3.place(x=1120, y=120)
 
     # Обработчик нажатия на клавишу "Добавить" в окне добавления графика
-    def click_button_add(self):
+    def click_button_add(self, subWindow):
 
-        c = self.input_c.get()
-        n = self.input_n.get()
+        if self.c2.get() == "РТС индекс":
+            model = Model(1)
 
-        if c != '':
-            c = float(c)
         else:
-            c = 1
+            model = Model(2)
 
-        if n != "":
-            n = int(n)
-        else:
-            n = 0
+            c = self.input_c.get()
+            n = self.input_n.get()
 
-        model = Model(c, n)
+            if c != '':
+                c = float(c)
+            else:
+                c = 1
+
+            if n != "":
+                n = int(n)
+            else:
+                n = 0
+
         model.calculation()
         model.normalisation_axis()
         model.graph = 1
 
         self.draw_graph(model)
+
+        subWindow.destroy()
 
     # Обработчик нажатия на клавишу "Закрыть" в окне добавления графика
     def click_button_close(self):
@@ -79,7 +86,7 @@ class MainWindow(Frame):
     def click_button_add_model(self):
         a = Toplevel()
         a.title('Добавить график')
-        a.geometry('300x200')
+        a.geometry('450x200')
 
         # Ввод n
         label_n = Label(a, text="Количество значений", height=1, width=18, font='Arial 14')
@@ -93,10 +100,20 @@ class MainWindow(Frame):
         self.input_c = Entry(a, width=15)
         self.input_c.place(x=10, y=80)
 
-        b1 = Button(a, text="Добавить", command=lambda: self.click_button_add(), width="13", height="2")
-        b1.place(x=40, y=150)
+        label2 = Label(a, text="График функции", height=1, width=14, font='Arial 14')
+        label2.place(x=200, y=10)
+        self.c2 = ttk.Combobox(a, values=[u"РТС индекс", u"GBM"], height=2)
+        self.c2.place(x=200, y=30)
+
+        label3 = Label(a, text="Место вывода графика", height=1, width=20, font='Arial 14')
+        label3.place(x=200, y=60)
+        self.c3 = ttk.Combobox(a, values=[u"1", u"2", u"3", u"4"], height=4)
+        self.c3.place(x=200, y=80)
+
+        b1 = Button(a, text="Добавить", command=lambda: self.click_button_add(a), width="13", height="2")
+        b1.place(x=150, y=150)
         b2 = Button(a, text="Закрыть", command=self.click_button_close, width="13", height="2")
-        b2.place(x=170, y=150)
+        b2.place(x=285, y=150)
 
         a.grab_set()  # Перехватывает все события происходящие в приложении
         a.focus_set()  # Захватывает и удерживает фокус
@@ -110,7 +127,7 @@ class MainWindow(Frame):
     def draw_graph(self, model):
 
         chart_number = str(model.graph)
-        x = model.n
+        x = len(model.x)
         y_min = model.y_axis_min
         y_max = model.y_axis_max
 

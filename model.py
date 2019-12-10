@@ -1,14 +1,43 @@
 import numpy as np
 import math
+import csv
 
-class Model():
-    def __init__(self, c, n):
-        self.c = c       # Константа
-        self.t = 1       # Период
+
+def import_rts_value():
+    filename = "input_files/SPFB.RTS_161210_191210 (1).csv"
+
+    cost_rts = []
+    date_rts = []
+
+    csv.register_dialect('pipes', delimiter=';')
+    with open(filename, 'r', newline='') as csv_file:
+        reader = csv.reader(csv_file, dialect='pipes')
+
+        for row in reader:
+            try:
+                r = float(row[2])
+                cost_rts.append(r)
+                date_rts.append(row[0])
+            except:
+                pass
+
+    # print(cost_rts)
+    # print(date_rts)
+
+    return date_rts, cost_rts
+
+
+class Model:
+    def __init__(self, option):
+        self.c = 1  # Константа
+        self.t = 1  # Период
+
+        self.option = option
 
         self.mu = 0.1
         self.sigma = 0.01
 
+        """
         if n == 0:
             self.dt = 0.1
             self.n = round(self.t / self.dt)  # Кол-во точек
@@ -17,6 +46,7 @@ class Model():
             self.dt = self.t / self.n
 
         self.x = np.arange(0, self.n)
+        """
 
         self.average_value = 0
         self.dispersion = 0
@@ -48,31 +78,10 @@ class Model():
 
     def calculation(self):
 
-        """
-        self.random()                           # Сгенирировали случайный процесс
-        self.calculation_average_value()                    # Расчсчтиали среднее значение
-        self.calculation_dispersion()           # Посчитали дипсперсии для расчета стандартного отклонения
-        self.calculation_standard_deviation()   # Расчитали стандартное отклонение
-
-        y = []
-        degree_standard_deviation = self.standard_deviation ** 2
-        argument_1 = self.average_value - (degree_standard_deviation / 2)
-        for i in range(self.n):
-            argument_exp = (argument_1 * i) + (self.standard_deviation * self.r_y[i])
-            argument = math.exp(argument_exp)
-            y.append(self.c * argument)
-
-        self.y = np.array(y)
-        """
-
-        self.x = np.linspace(0, self.t, self.n)
-        W = np.random.standard_normal(size=self.n)
-        W = np.cumsum(W) * np.sqrt(self.dt)         ### standard brownian motion ###
-        X = (self.mu - 0.5 * self.sigma ** 2) * self.x + self.sigma * W
-        self.y = self.c * np.exp(X)                 ### geometric brownian motion ###
+        if self.option == 1:
+            self.date, self.y = import_rts_value()
+            self.x = np.arange(len(self.y))
 
     def normalisation_axis(self):
-        self.y_axis_max = np.amax(self.y)
-        self.y_axis_min = np.amin(self.y)
-
-
+        self.y_axis_max = np.amax(self.y) * 1.2
+        self.y_axis_min = np.amin(self.y) * 0.8
