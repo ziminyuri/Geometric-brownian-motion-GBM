@@ -12,7 +12,6 @@ class MainWindow(Frame):
 
         self.root = root
         self.graph = []
-        self.analysis_model = []  # Список, где храним модели анализа
 
         label1 = Label(text="График №1", height=1, width=15, font='Arial 18')
         label1.place(x=165, y=5)
@@ -49,8 +48,6 @@ class MainWindow(Frame):
         b3 = Button(text="Анализ", command=self.click_button_add_model, width="26", height="2")
         b3.place(x=1120, y=120)
 
-        self.combobox_value = []  # ComboBox графиков для анализа
-
     # Обработчик нажатия на клавишу "Добавить" в окне добавления графика
     def click_button_add(self):
 
@@ -65,7 +62,7 @@ class MainWindow(Frame):
         if n != "":
             n = int(n)
         else:
-            n = 1000
+            n = 0
 
         model = Model(c, n)
         model.calculation()

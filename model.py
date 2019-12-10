@@ -3,8 +3,18 @@ import math
 
 class Model():
     def __init__(self, c, n):
-        self.n = n       # Кол-во точек
         self.c = c       # Константа
+        self.t = 1       # Период
+
+        self.mu = 0.1
+        self.sigma = 0.01
+
+        if n == 0:
+            self.dt = 0.1
+            self.n = round(self.t / self.dt)  # Кол-во точек
+        else:
+            self.n = n
+            self.dt = self.t / self.n
 
         self.x = np.arange(0, self.n)
 
@@ -38,6 +48,7 @@ class Model():
 
     def calculation(self):
 
+        """
         self.random()                           # Сгенирировали случайный процесс
         self.calculation_average_value()                    # Расчсчтиали среднее значение
         self.calculation_dispersion()           # Посчитали дипсперсии для расчета стандартного отклонения
@@ -52,6 +63,13 @@ class Model():
             y.append(self.c * argument)
 
         self.y = np.array(y)
+        """
+
+        self.x = np.linspace(0, self.t, self.n)
+        W = np.random.standard_normal(size=self.n)
+        W = np.cumsum(W) * np.sqrt(self.dt)         ### standard brownian motion ###
+        X = (self.mu - 0.5 * self.sigma ** 2) * self.x + self.sigma * W
+        self.y = self.c * np.exp(X)                 ### geometric brownian motion ###
 
     def normalisation_axis(self):
         self.y_axis_max = np.amax(self.y)
