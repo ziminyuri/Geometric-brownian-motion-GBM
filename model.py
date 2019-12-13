@@ -21,10 +21,16 @@ def import_rts_value():
             except:
                 pass
 
-    # print(cost_rts)
-    # print(date_rts)
+    new_data_rts = []
+    for i in date_rts:
+        temp = i[:4] + "-" + i[4:6] + "-" + i[6:8]
+        new_data_rts.append(temp)
 
-    return date_rts, cost_rts
+    print(new_data_rts)
+    # print(cost_rts)
+    print(date_rts)
+
+    return new_data_rts, cost_rts
 
 
 class Model:
@@ -85,3 +91,31 @@ class Model:
     def normalisation_axis(self):
         self.y_axis_max = np.amax(self.y) * 1.2
         self.y_axis_min = np.amin(self.y) * 0.8
+
+    # Выделяем в ручную тренд методом скользящего окна
+    def highlight_trends(self, analyzed_model):
+
+        size_of_window = 50
+        analysis_model_n = len(analyzed_model.y)
+        sum_value_of_window = 0
+        y = np.copy(analyzed_model.y)
+
+        for i in range(analysis_model_n - size_of_window):
+            for j in range(size_of_window):
+                sum_value_of_window += y[i + j]
+
+            average = sum_value_of_window / size_of_window
+            y[i] = average
+            sum_value_of_window = 0
+
+        for i in range(analysis_model_n - size_of_window, analysis_model_n):
+            for j in range(size_of_window):
+                sum_value_of_window += y[i - j]
+
+            average = sum_value_of_window / size_of_window
+            y[i] = average
+            sum_value_of_window = 0
+
+        self.y = np.copy(y)
+        self.x = np.arange(len(self.y))
+

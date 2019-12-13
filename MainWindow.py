@@ -6,6 +6,11 @@ from matplotlib.figure import Figure
 from model import Model
 
 
+# Обработчик нажатия на клавишу "Закрыть" в окне добавления графика
+def click_button_close(subWindow):
+    subWindow.destroy()
+
+
 class MainWindow(Frame):
     def __init__(self, root):
         super().__init__(root)
@@ -45,8 +50,11 @@ class MainWindow(Frame):
         b2 = Button(text="Добавить", command=self.click_button_add_model, width="26", height="2")
         b2.place(x=1120, y=70)
 
-        b3 = Button(text="Анализ", command=self.click_button_add_model, width="26", height="2")
+        b3 = Button(text="Анализ", command=self.click_button_anylise, width="26", height="2")
         b3.place(x=1120, y=120)
+
+        self.combobox_graph = []
+        self.graph_list = []
 
     # Обработчик нажатия на клавишу "Добавить" в окне добавления графика
     def click_button_add(self, subWindow):
@@ -72,15 +80,82 @@ class MainWindow(Frame):
 
         model.calculation()
         model.normalisation_axis()
-        model.graph = 1
 
+        if self.c3.get() != "":
+            model.graph = int(self.c3.get())
+        else:
+            model.graph = 1
+
+        self.append_graph_to_list_and_combobox(model)
         self.draw_graph(model)
 
         subWindow.destroy()
 
-    # Обработчик нажатия на клавишу "Закрыть" в окне добавления графика
-    def click_button_close(self):
-        pass
+    # Обработка нажатие на кнопку "Выделить тренды"
+    def highlight_trends(self, subWindow):
+        if self.c2.get() != "":
+            analyse_model = self.get_model(self.c2.get())
+            model = Model(3)
+            model.highlight_trends(analyse_model)
+            model.normalisation_axis()
+
+            if self.c3.get() != "":
+                model.graph = int(self.c3.get())
+            else:
+                model.graph = 1
+
+            self.draw_graph(model)
+
+        subWindow.destroy()
+
+    # Получаем объект модели из списка объектов моделей
+    def get_model(self, search_model):
+        for i in self.graph_list:
+            if i.graph == int(search_model):
+                return i
+
+    # Добавление в комбобокс построенных графиков и в список объектов моделей
+    def append_graph_to_list_and_combobox(self, model):
+        flag = 0
+
+        for i in self.combobox_graph:
+            if i == str(model.graph) and flag == 0:
+                flag = 1
+
+        if flag == 0:
+            self.combobox_graph.append(str(model.graph))
+            self.combobox_graph.sort()
+
+        for i in self.graph_list:
+            if i.graph == model.graph:
+                i = model
+                return
+
+        self.graph_list.append(model)
+
+    # Окно анализа
+    def click_button_anylise(self):
+        a = Toplevel()
+        a.title('Анализ')
+        a.geometry('450x200')
+
+        label2 = Label(a, text="График функции", height=1, width=14, font='Arial 14')
+        label2.place(x=10, y=10)
+        self.c2 = ttk.Combobox(a, values=self.combobox_graph, height=2)
+        self.c2.place(x=10, y=30)
+
+        label3 = Label(a, text="Место вывода графика", height=1, width=20, font='Arial 14')
+        label3.place(x=10, y=60)
+        self.c3 = ttk.Combobox(a, values=[u"1", u"2", u"3", u"4"], height=4)
+        self.c3.place(x=10, y=80)
+
+        b1 = Button(a, text="Выделить тренды", command=lambda: self.highlight_trends(a), width="13", height="2")
+        b1.place(x=285, y=20)
+        b2 = Button(a, text="Закрыть", command=lambda: click_button_close(a), width="13", height="2")
+        b2.place(x=285, y=150)
+
+        a.grab_set()  # Перехватывает все события происходящие в приложении
+        a.focus_set()  # Захватывает и удерживает фокус
 
     # Окно добавления графика
     def click_button_add_model(self):
@@ -88,41 +163,31 @@ class MainWindow(Frame):
         a.title('Добавить график')
         a.geometry('450x200')
 
-        # Ввод n
-        label_n = Label(a, text="Количество значений", height=1, width=18, font='Arial 14')
-        label_n.place(x=10, y=10)
-        self.input_n = Entry(a, width=15)
-        self.input_n.place(x=10, y=30)
-
-        # Ввод c
-        label_c = Label(a, text="Введите с", height=1, width=9, font='Arial 14')
-        label_c.place(x=10, y=60)
-        self.input_c = Entry(a, width=15)
-        self.input_c.place(x=10, y=80)
-
         label2 = Label(a, text="График функции", height=1, width=14, font='Arial 14')
-        label2.place(x=200, y=10)
+        label2.place(x=10, y=10)
         self.c2 = ttk.Combobox(a, values=[u"РТС индекс", u"GBM"], height=2)
-        self.c2.place(x=200, y=30)
+        self.c2.place(x=10, y=30)
 
         label3 = Label(a, text="Место вывода графика", height=1, width=20, font='Arial 14')
-        label3.place(x=200, y=60)
+        label3.place(x=10, y=60)
         self.c3 = ttk.Combobox(a, values=[u"1", u"2", u"3", u"4"], height=4)
-        self.c3.place(x=200, y=80)
+        self.c3.place(x=10, y=80)
 
         b1 = Button(a, text="Добавить", command=lambda: self.click_button_add(a), width="13", height="2")
         b1.place(x=150, y=150)
-        b2 = Button(a, text="Закрыть", command=self.click_button_close, width="13", height="2")
+        b2 = Button(a, text="Закрыть", command=lambda: click_button_close(a), width="13", height="2")
         b2.place(x=285, y=150)
 
         a.grab_set()  # Перехватывает все события происходящие в приложении
         a.focus_set()  # Захватывает и удерживает фокус
 
+    """
     def get_model(self, number_of_trend):
         for i in self.graph:
             g = i.graph
             if g == int(number_of_trend):
                 return i
+    """
 
     def draw_graph(self, model):
 
