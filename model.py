@@ -3,9 +3,8 @@ import math
 import csv
 
 
-def import_rts_value():
-    filename = "input_files/SPFB.RTS_161210_191210 (1).csv"
-
+# Функция импорта котировок
+def import_value(filename):
     cost_rts = []
     date_rts = []
 
@@ -85,7 +84,23 @@ class Model:
     def calculation(self):
 
         if self.option == 1:
-            self.date, self.y = import_rts_value()
+            filename = "input_files/SPFB.RTS_161210_191210 (1).csv"
+            self.date, self.y = import_value(filename)
+            self.x = np.arange(len(self.y))
+
+        if self.option == 3:
+            filename = "input_files/SBER_161212_191210.csv"
+            self.date, self.y = import_value(filename)
+            self.x = np.arange(len(self.y))
+
+        if self.option == 4:
+            filename = "input_files/GAZP_161212_191210 (1).csv"
+            self.date, self.y = import_value(filename)
+            self.x = np.arange(len(self.y))
+
+        if self.option == 5:
+            filename = "input_files/VTBR_161212_191210 (1).csv"
+            self.date, self.y = import_value(filename)
             self.x = np.arange(len(self.y))
 
     def normalisation_axis(self):

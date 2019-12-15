@@ -62,7 +62,16 @@ class MainWindow(Frame):
         if self.c2.get() == "РТС индекс":
             model = Model(1)
 
-        else:
+        if self.c2.get() == "Сбербанк":
+            model = Model(3)
+
+        if self.c2.get() == "Газпром":
+            model = Model(4)
+
+        if self.c2.get() == "ВТБ":
+            model = Model(5)
+
+        if self.c2.get() == "GBM":
             model = Model(2)
 
             c = self.input_c.get()
@@ -165,7 +174,7 @@ class MainWindow(Frame):
 
         label2 = Label(a, text="График функции", height=1, width=14, font='Arial 14')
         label2.place(x=10, y=10)
-        self.c2 = ttk.Combobox(a, values=[u"РТС индекс", u"GBM"], height=2)
+        self.c2 = ttk.Combobox(a, values=[u"РТС индекс", u"GBM", u"Сбербанк", u"Газпром", u"ВТБ"], height=2)
         self.c2.place(x=10, y=30)
 
         label3 = Label(a, text="Место вывода графика", height=1, width=20, font='Arial 14')
