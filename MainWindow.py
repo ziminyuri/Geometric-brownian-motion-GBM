@@ -80,6 +80,15 @@ class MainWindow(Frame):
         if self.c2.get() == "РТС - GBM":
             model = Model(2)
 
+        if self.c2.get() == "Сбербанк - GBM":
+            model = Model(6)
+
+        if self.c2.get() == "Газпром - GBM":
+            model = Model(7)
+
+        if self.c2.get() == "ВТБ - GBM":
+            model = Model(8)
+
         model.calculation()
         model.normalisation_axis()
 
@@ -249,9 +258,6 @@ class MainWindow(Frame):
 
         analyzed_model = self.get_model(self.c1.get())
         analysis_model = self.get_analysis(analyzed_model)
-
-        if choice_of_calculation == 1:
-            self.check_stationarity_click_button(analysis_model)
 
         if choice_of_calculation == 2:
             self.average_value_click_button(analysis_model)
