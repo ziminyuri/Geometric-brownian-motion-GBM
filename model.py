@@ -38,24 +38,11 @@ class Model:
         self.t = 1  # Период
 
         self.option = option
+        self.n = 0
 
         self.mu = 0.1
         self.sigma = 0.01
 
-        """
-        if n == 0:
-            self.dt = 0.1
-            self.n = round(self.t / self.dt)  # Кол-во точек
-        else:
-            self.n = n
-            self.dt = self.t / self.n
-
-        self.x = np.arange(0, self.n)
-        """
-
-        self.average_value = 0
-        self.dispersion = 0
-        self.standard_deviation = 0
 
         self.y_axis_min = 0
         self.y_axis_max = 0
@@ -65,19 +52,6 @@ class Model:
     def calculation_average_value(self):
         self.average_value = np.mean(self.r_y)
 
-    # Рассчет дисперсии
-    def calculation_dispersion(self):
-
-        dispersion = 0
-        for i in range(self.n):
-            dispersion += (self.r_y[i] - self.average_value) * (self.r_y[i] - self.average_value)
-
-        self.dispersion = dispersion / self.n
-
-    # Рассчет стандартного отклонения
-    def calculation_standard_deviation(self):
-        self.standard_deviation = math.sqrt(self.dispersion)
-
     def random(self):
         self.r_y = np.random.uniform(0, self.c, self.n)
 
@@ -86,22 +60,21 @@ class Model:
         if self.option == 1:
             filename = "input_files/SPFB.RTS_161210_191210 (1).csv"
             self.date, self.y = import_value(filename)
-            self.x = np.arange(len(self.y))
 
         if self.option == 3:
             filename = "input_files/SBER_161212_191210.csv"
             self.date, self.y = import_value(filename)
-            self.x = np.arange(len(self.y))
 
         if self.option == 4:
             filename = "input_files/GAZP_161212_191210 (1).csv"
             self.date, self.y = import_value(filename)
-            self.x = np.arange(len(self.y))
 
         if self.option == 5:
             filename = "input_files/VTBR_161212_191210 (1).csv"
             self.date, self.y = import_value(filename)
-            self.x = np.arange(len(self.y))
+
+        self.n = len(self.y)
+        self.x = np.arange(self.n)
 
     def normalisation_axis(self):
         self.y_axis_max = np.amax(self.y) * 1.2

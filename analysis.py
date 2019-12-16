@@ -19,16 +19,6 @@ class Analysis:
         self.standard_ratio = 0            # Стандартный коэффициент
         self.excess = 0                    # Эксцесс
 
-        # Параметры для гистограммы
-        self.bar_graph = []                # Значения для графика гистограммы
-        self.number_of_intervals = 40      # Количество интервалов для гистограмм
-        self.max_bar_graph_value = 0
-
-        # Параметры для автокорреляции
-        self.l = model.n - 1         # Сдвиг
-
-        # Параментр для Преобразования Фурье (Спектр)
-        self.delta_t = 0.01
 
     # Рассчет среднего значения
     def calculation_average_value(self):
@@ -36,31 +26,6 @@ class Analysis:
         self.average_value = np.mean(self.model.y)
 
         return self.average_value
-
-    def check_stationarity_average_value(self):
-
-        number_of_gaps = 10  # Количество промежутков
-
-        gap_length = int(self.model.n / number_of_gaps)  # Длина промежутка
-
-        average_value = 0
-
-        delta_min_max = (2 * self.model.s_max) * 0.05
-
-        for i in range(self.model.n):
-            average_value = average_value + math.fabs(self.model.y[i])
-            if i % gap_length == 0 and i > 0 or i == self.model.n - 1:
-                average_value = average_value / gap_length
-                self.all_average_value.append(average_value)
-                average_value = 0
-
-        flag_stationarity = True
-        for i in range(self.all_average_value.__len__() - 1):
-
-            if math.fabs(self.all_average_value[i] - self.all_average_value[i + 1]) > delta_min_max:
-                flag_stationarity = False
-
-        return flag_stationarity
 
     # Рассчет дисперсии
     def calculation_dispersion(self, iteration_number):

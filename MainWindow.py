@@ -3,6 +3,7 @@ from tkinter import messagebox, ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
+from analysis import Analysis
 from model import Model
 
 
@@ -58,6 +59,7 @@ class MainWindow(Frame):
 
         self.combobox_graph = []
         self.graph_list = []
+        self.analysis_model_list = []
 
     # Обработчик нажатия на клавишу "Добавить" в окне добавления графика
     def click_button_add(self, subWindow):
@@ -76,19 +78,6 @@ class MainWindow(Frame):
 
         if self.c2.get() == "GBM":
             model = Model(2)
-
-            c = self.input_c.get()
-            n = self.input_n.get()
-
-            if c != '':
-                c = float(c)
-            else:
-                c = 1
-
-            if n != "":
-                n = int(n)
-            else:
-                n = 0
 
         model.calculation()
         model.normalisation_axis()
@@ -144,17 +133,6 @@ class MainWindow(Frame):
                 return
 
         self.graph_list.append(model)
-
-    # Обработка нажатия на кнопку "Стационарность: СЗ"
-    @staticmethod
-    def check_stationarity_click_button(analysis):
-
-        check_result = analysis.check_stationarity_average_value()
-
-        if check_result:
-            messagebox.showinfo("Проверка на стационарность: Среднее значение", "График стационарен")
-        else:
-            messagebox.showinfo("Проверка на стационарность: Среднее значение", "График не стационарен")
 
     # Обработка нажатия на кнопку "Диспресия"
     @staticmethod
@@ -251,6 +229,17 @@ class MainWindow(Frame):
     def click_button_nested_correlation(self, subWindow):
         subWindow.destroy()
 
+    # Возвращаем модель анализа
+    def get_analysis(self,analyzed_model):
+        for i in self.analysis_model_list:
+            if i.model == analyzed_model:
+                return i
+
+        analysis_model = Analysis(analyzed_model)
+        self.analysis_model_list.append(analysis_model)
+
+        return analysis_model
+
     # Рассчет статистик
     def statistics_calculation(self, subWindow, choice_of_calculation):
 
@@ -325,10 +314,8 @@ class MainWindow(Frame):
 
         choice_of_calculation = IntVar()
         choice_of_calculation.set(0)
-        stationarity = Radiobutton(a, text='Стационарность: СЗ', variable=choice_of_calculation, value=1)
         average_value = Radiobutton(a, text='Среднее значение', variable=choice_of_calculation, value=2)
         dispersion = Radiobutton(a, text='Дисперсия', variable=choice_of_calculation, value=3)
-        dispersion_x_10 = Radiobutton(a, text='Дисперсия x10', variable=choice_of_calculation, value=4)
         standard_deviation = Radiobutton(a, text='Стандартное отклоение', variable=choice_of_calculation, value=5)
         asymmetry = Radiobutton(a, text='Асимметрия', variable=choice_of_calculation, value=6)
         asymmetry_coefficient = Radiobutton(a, text='Коэффициент асимметрии', variable=choice_of_calculation, value=7)
@@ -340,23 +327,20 @@ class MainWindow(Frame):
         x_min = Radiobutton(a, text='Минимальный Х', variable=choice_of_calculation, value=12)
         x_max = Radiobutton(a, text='Максимальный Х', variable=choice_of_calculation, value=13)
 
-        stationarity.place(x=10, y=60)
-        average_value.place(x=10, y=80)
-        dispersion.place(x=10, y=100)
-        dispersion_x_10.place(x=10, y=120)
-        standard_deviation.place(x=10, y=140)
-        asymmetry.place(x=10, y=160)
-        asymmetry_coefficient.place(x=10, y=180)
-        excess.place(x=10, y=200)
-        kurtosis.place(x=10, y=220)
-        standard_ratio.place(x=10, y=240)
-        mean_absolute_deviation.place(x=10, y=260)
-        x_min.place(x=10, y=280)
-        x_max.place(x=10, y=300)
+        average_value.place(x=10, y=60)
+        dispersion.place(x=10, y=80)
+        standard_deviation.place(x=10, y=100)
+        asymmetry.place(x=10, y=120)
+        asymmetry_coefficient.place(x=10, y=140)
+        excess.place(x=10, y=160)
+        kurtosis.place(x=10, y=180)
+        standard_ratio.place(x=10, y=200)
+        mean_absolute_deviation.place(x=10, y=220)
+        x_min.place(x=10, y=240)
+        x_max.place(x=10, y=260)
 
         b1 = Button(a, text="Вычислить",
-                    command=lambda: self.statistics_calculation(a, choice_of_calculation.get()),
-                    width="15", height="2")
+                    command=lambda: self.statistics_calculation(a, choice_of_calculation.get()), width="15", height="2")
         b1.place(x=600, y=450)
         b2 = Button(a, text="Закрыть", command=lambda: click_button_close(a), width="15", height="2")
         b2.place(x=750, y=450)
@@ -396,7 +380,7 @@ class MainWindow(Frame):
 
         label2 = Label(a, text="График функции", height=1, width=14, font='Arial 14')
         label2.place(x=10, y=10)
-        self.c2 = ttk.Combobox(a, values=[u"РТС индекс", u"GBM", u"Сбербанк", u"Газпром", u"ВТБ"], height=2)
+        self.c2 = ttk.Combobox(a, values=[u"РТС индекс", u"GBM", u"Сбербанк", u"Газпром", u"ВТБ"], height=5)
         self.c2.place(x=10, y=30)
 
         label3 = Label(a, text="Место вывода графика", height=1, width=20, font='Arial 14')
@@ -414,7 +398,7 @@ class MainWindow(Frame):
 
     # Получаем объект модели из списка объектов по
     def get_model(self, number_of_trend):
-        for i in self.graph:
+        for i in self.graph_list:
             g = i.graph
             if g == int(number_of_trend):
                 return i
