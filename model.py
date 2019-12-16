@@ -1,7 +1,5 @@
 import numpy as np
-import math
 import csv
-import matplotlib.pyplot as plt
 
 
 # Функция импорта котировок
@@ -26,39 +24,18 @@ def import_value(filename):
         temp = i[:4] + "-" + i[4:6] + "-" + i[6:8]
         new_data_rts.append(temp)
 
-    print(new_data_rts)
-    # print(cost_rts)
-    print(date_rts)
-
     return new_data_rts, cost_rts
 
 
 class Model:
     def __init__(self, option):
-        self.c = 1  # Константа
-        self.t = 1  # Период
-
         self.option = option
         self.n = 0
-
-        self.mu = 0.1
-        self.sigma = 0.01
-
 
         self.y_axis_min = 0
         self.y_axis_max = 0
 
         self.graph = 0
-
-    def calculation_average_value(self):
-        self.average_value = np.mean(self.r_y)
-
-    def random(self):
-        self.r_y = np.random.uniform(0, self.c, self.n)
-
-    def dispersion(self, y):
-        dispersion_value = np.var(y)
-        return dispersion_value
 
     # Расчет геометрического Броуновского движения
     def gbm(self):

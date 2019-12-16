@@ -18,7 +18,6 @@ class MainWindow(Frame):
         super().__init__(root)
 
         self.root = root
-        self.graph = []
 
         label1 = Label(text="График №1", height=1, width=15, font='Arial 18')
         label1.place(x=165, y=5)
@@ -237,6 +236,30 @@ class MainWindow(Frame):
 
     # Рассчет взаимной корелляции
     def click_button_nested_correlation(self, subWindow):
+
+        if self.check_empty_c1():
+            return
+
+        analyzed_model_1 = self.get_model(self.c1.get())
+        analysis_model = self.get_analysis(analyzed_model_1)
+
+        if self.c3.get() == "":
+            return
+
+        if self.c3.get() == "Сбербанк":
+            analyzed_model_2 = Model(3)
+
+        if self.c3.get() == "Газпром":
+            analyzed_model_2 = Model(4)
+
+        if self.c3.get() == "ВТБ":
+            analyzed_model_2 = Model(5)
+        analyzed_model_2.calculation()
+        nested_correlation_model = analysis_model.calculation_nested_correlation(analyzed_model_1,analyzed_model_2)
+        nested_correlation_model.graph = int(self.c2.get())
+        nested_correlation_model.normalisation_axis()
+        self.draw_graph(nested_correlation_model)
+
         subWindow.destroy()
 
     # Возвращаем модель анализа
@@ -403,14 +426,6 @@ class MainWindow(Frame):
 
         a.grab_set()  # Перехватывает все события происходящие в приложении
         a.focus_set()  # Захватывает и удерживает фокус
-
-    # Получаем объект модели из списка объектов по
-    def get_model(self, number_of_trend):
-        for i in self.graph_list:
-            g = i.graph
-            if g == int(number_of_trend):
-                return i
-
 
     def draw_graph(self, model):
 

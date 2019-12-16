@@ -1,5 +1,4 @@
 import math
-import copy
 
 import numpy as np
 from model import Model
@@ -18,6 +17,8 @@ class Analysis:
         self.asymmetry_coefficient = 0     # Коэффициент асимметрии
         self.standard_ratio = 0            # Стандартный коэффициент
         self.excess = 0                    # Эксцесс
+
+        self.l = model.n - 1  # Сдвиг
 
 
     # Рассчет среднего значения
@@ -172,76 +173,11 @@ class Analysis:
         return x
 
     # Взаимной корреляция
-    def calculation_nested_correlation(self):
+    def calculation_nested_correlation(self, model_1, model_2):
 
-        model = Model(16)                       # Модель графика взаимной корреляция
-        analysis_model_n = self.model.n
-
-        y_list_1 = copy.deepcopy(self.model.y)
-        self.calculation_average_value()
-        average_value1 = self.average_value
-
-        self.model.calculation()
-        y_list_2 = copy.deepcopy(self.model.y)
-        self.calculation_average_value()
-        average_value2 = self.average_value
-
-        x = []
-        y = []
-
-        result_y_min = 0
-        result_y_max = 0
-
-        # Знаменатель
-        sum_1 = 0
-        sum_2 = 0
-
-        for j in range(analysis_model_n - 1):
-            temp_value_1 = (y_list_1[j] - average_value1)
-            temp_value_1 = temp_value_1 ** 2
-            sum_1 = sum_1 + temp_value_1
-
-            temp_value_2 = (y_list_2[j] - average_value2)
-            temp_value_2 = temp_value_2 ** 2
-            sum_2 = sum_2 + temp_value_2
-
-        denominator = sum_1 * sum_2
-        denominator = math.sqrt(denominator)
-
-        for i in range(self.l):
-
-            numerator = 0
-
-            for j in range(analysis_model_n - i - 1):
-                temp_value = (y_list_1[j] - average_value1) * (y_list_2[j+i] - average_value2)
-                numerator = numerator + temp_value
-
-            result_y = numerator / denominator
-
-            """
-            if result_y_min > result_y:
-                result_y_min = result_y
-
-            if result_y_max < result_y:
-                result_y_max = result_y
-            """
-
-            x.append(i)
-            y.append(result_y)
-
-        model.n = self.l
-        model.y = np.array(y)
-        model.x = np.array(x)
-
-        mac_y = np.amax(model.y)
-        mac_x = np.amin(model.y)
-
-        # model.s_min = result_y_min
-        # model.s_max = result_y_max
-        # model.y = model.y * 99
-        # model.normalization()
-
-        model.axis_max = np.amax(model.y)
-        model.axis_min = np.amin(model.y)
+        model = Model(9)                       # Модель графика взаимной корреляция
+        model.y = np.correlate(model_1.y, model_2.y)
+        model.n = len(model.y)
+        model.x = np.arange(model.n)
 
         return model
