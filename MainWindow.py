@@ -3,6 +3,7 @@ from tkinter import messagebox, ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
+
 from analysis import Analysis
 from model import Model
 
@@ -76,7 +77,7 @@ class MainWindow(Frame):
         if self.c2.get() == "ВТБ":
             model = Model(5)
 
-        if self.c2.get() == "GBM":
+        if self.c2.get() == "РТС - GBM":
             model = Model(2)
 
         model.calculation()
@@ -380,7 +381,8 @@ class MainWindow(Frame):
 
         label2 = Label(a, text="График функции", height=1, width=14, font='Arial 14')
         label2.place(x=10, y=10)
-        self.c2 = ttk.Combobox(a, values=[u"РТС индекс", u"GBM", u"Сбербанк", u"Газпром", u"ВТБ"], height=5)
+        self.c2 = ttk.Combobox(a, values=[u"РТС индекс", u"Сбербанк", u"Газпром", u"ВТБ", u"РТС - GBM"
+                                          , u"Сбербанк - GBM", u"Газпром - GBM", u"ВТБ - GBM"], height=8)
         self.c2.place(x=10, y=30)
 
         label3 = Label(a, text="Место вывода графика", height=1, width=20, font='Arial 14')
