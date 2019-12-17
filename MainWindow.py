@@ -138,8 +138,7 @@ class MainWindow(Frame):
 
         for i in self.graph_list:
             if i.graph == model.graph:
-                i = model
-                return
+                self.graph_list.remove(i)
 
         self.graph_list.append(model)
 
