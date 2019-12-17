@@ -147,7 +147,7 @@ class MainWindow(Frame):
     @staticmethod
     def dispersion_click_button(analysis):
 
-        check_result = analysis.calculation_dispersion(1)
+        check_result = analysis.calculation_dispersion()
         messagebox.showinfo("Дисперсия", "Дисперсия: " + str(check_result))
 
     # Обработка нажатия на кнопку "Среднее значение"

@@ -35,6 +35,8 @@ class Model:
         self.y_axis_min = 0
         self.y_axis_max = 0
 
+        self.y_gaps_10 = []  # Промежутки исходных данных
+
         self.graph = 0
 
     # Расчет геометрического Броуновского движения
@@ -61,6 +63,15 @@ class Model:
         self.x = np.arange(N)
         self.y = S
 
+    # Расчет промежутков
+    def highlight_gaps(self):
+        interval = int(self.n / 10)
+        for i in range(10):
+            a = i * interval
+            b = (i + 1) * interval
+            y = self.y[a:b]
+            self.y_gaps_10.append(y)
+
     def calculation(self):
 
         # РТС
@@ -69,6 +80,7 @@ class Model:
             self.date, self.y = import_value(filename)
             self.n = len(self.y)
             self.x = np.arange(self.n)
+            self.highlight_gaps() # Разбиваем данные на 10 равных промежутков
 
         # Сбербанк
         if self.option == 3:

@@ -1,4 +1,5 @@
 import math
+import copy
 
 import numpy as np
 from model import Model
@@ -7,49 +8,53 @@ from model import Model
 class Analysis:
     def __init__(self, model):
 
-        self.model = model                 # Модель, которую анализиурем
+        self.model = model  # Модель, которую анализиурем
 
-        self.all_average_value = []        # Все средние значения
-        self.average_value = 0             # Среднее значения тренда
-        self.dispersion = 0                # Дисперсия
-        self.standard_deviation = 0        # Стандартное отклонение
-        self.asymmetry = 0                 # Асимметрия
-        self.asymmetry_coefficient = 0     # Коэффициент асимметрии
-        self.standard_ratio = 0            # Стандартный коэффициент
-        self.excess = 0                    # Эксцесс
+        self.all_average_value = []  # Все средние значения
+        self.average_value = 0  # Среднее значения тренда
+        self.dispersion = 0  # Дисперсия
+        self.standard_deviation = 0  # Стандартное отклонение
+        self.asymmetry = 0  # Асимметрия
+        self.asymmetry_coefficient = 0  # Коэффициент асимметрии
+        self.standard_ratio = 0  # Стандартный коэффициент
+        self.excess = 0  # Эксцесс
 
         self.l = model.n - 1  # Сдвиг
-
 
     # Рассчет среднего значения
     def calculation_average_value(self):
 
         self.average_value = np.mean(self.model.y)
 
+        print("Расчет среднего на 10 интервалах")
+
+        for i in range(len(self.model.y_gaps_10)):
+            average_value = np.mean(self.model.y_gaps_10[i])
+            self.all_average_value.append(average_value)
+            print("Среднее значение промежутка № " + str(i + 1) + " = " + str(average_value))
+
         return self.average_value
 
     # Рассчет дисперсии
-    def calculation_dispersion(self, iteration_number):
+    def calculation_dispersion(self):
 
-        if iteration_number <= 0:
-            return
-
-        trend_list = np.copy(self.model.y)
-
-        for i in range(iteration_number - 1):
-            self.model.calculation()
-            deep_copy_y = np.copy(self.model.y)
-            trend_list += deep_copy_y
-
-        trend_list = trend_list / iteration_number
-
-        average_value = np.mean(trend_list)
+        if self.average_value ==0:
+            self.calculation_average_value()
 
         dispersion = 0
         for i in range(self.model.n):
-            dispersion += (trend_list[i] - average_value) * (trend_list[i] - average_value)
+            dispersion += (self.model.y[i] - self.average_value) * (self.model.y[i] - self.average_value)
 
         self.dispersion = dispersion / self.model.n
+
+        for i in range(len(self.model.y_gaps_10)):
+            y = copy.deepcopy(self.model.y_gaps_10[i])
+            dispersion = 0
+            for j in range(len(y)):
+                dispersion += (y[j] - self.all_average_value[i]) * (y[j] - self.all_average_value[i])
+
+            dispersion = dispersion / len(y)
+            print("Дисперсия промежутка № " + str(i + 1) + " = " + str(dispersion))
 
         return self.dispersion
 
@@ -175,8 +180,8 @@ class Analysis:
     # Взаимной корреляция
     def calculation_nested_correlation(self, model_1, model_2):
 
-        model = Model(9)                       # Модель графика взаимной корреляция
-        model.y = np.correlate(model_1.y, model_2.y)
+        model = Model(9)  # Модель графика взаимной корреляция
+        model.y = np.correlate(model_1.y, model_2.y, mode="full")
         model.n = len(model.y)
         model.x = np.arange(model.n)
 
