@@ -2,6 +2,7 @@ import numpy as np
 import csv
 import copy
 
+
 # Функция импорта котировок
 def import_value(filename):
     cost_rts = []
@@ -42,7 +43,7 @@ class Model:
     # Расчет геометрического Броуновского движения
     def gbm(self):
         all_y = []
-        for i in range (len(self.y_gaps_10)):
+        for i in range(len(self.y_gaps_10)):
             y = copy.deepcopy(self.y_gaps_10[i])
             n = len(y)
 
@@ -90,7 +91,7 @@ class Model:
             self.date, self.y = import_value(filename)
             self.n = len(self.y)
             self.x = np.arange(self.n)
-            self.highlight_gaps() # Разбиваем данные на 10 равных промежутков
+            self.highlight_gaps()  # Разбиваем данные на 10 равных промежутков
 
         # Сбербанк
         if self.option == 3:
@@ -148,7 +149,11 @@ class Model:
     # Нормализация осей
     def normalisation_axis(self):
         self.y_axis_max = np.amax(self.y) * 1.2
-        self.y_axis_min = np.amin(self.y) * 0.8
+        min = np.amin(self.y)
+        if min > 0:
+            self.y_axis_min = np.amin(self.y) * 0.8
+        else:
+            self.y_axis_min = np.amin(self.y) * 1.2
 
     # Выделяем в ручную тренд методом скользящего окна
     def highlight_trends(self, analyzed_model):
@@ -176,4 +181,3 @@ class Model:
 
         self.y = np.copy(y)
         self.x = np.arange(len(self.y))
-

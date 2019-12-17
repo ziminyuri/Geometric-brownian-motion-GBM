@@ -254,6 +254,16 @@ class MainWindow(Frame):
 
         if self.c3.get() == "ВТБ":
             analyzed_model_2 = Model(5)
+
+        if self.c3.get() == "Сбербанк - GBM":
+            analyzed_model_2 = Model(6)
+
+        if self.c3.get() == "Газпром - GBM":
+            analyzed_model_2 = Model(7)
+
+        if self.c3.get() == "ВТБ - GBM":
+            analyzed_model_2 = Model(8)
+
         analyzed_model_2.calculation()
         nested_correlation_model = analysis_model.calculation_nested_correlation(analyzed_model_1,analyzed_model_2)
         nested_correlation_model.graph = int(self.c2.get())
@@ -334,7 +344,8 @@ class MainWindow(Frame):
 
         label3 = Label(a, text="Данные для взаимной корелляции", height=1, width=29, font='Arial 14')
         label3.place(x=300, y=70)
-        self.c3 = ttk.Combobox(a, values=[u"Сбербанк", u"Газпром", u"ВТБ"], height=3, width="24")
+        self.c3 = ttk.Combobox(a, values=[u"Сбербанк", u"Газпром", u"ВТБ", u"Сбербанк - GBM", u"Газпром - GBM",
+                                          u"ВТБ - GBM"], height=7, width="24")
         self.c3.place(x=300, y=90)
 
         button_nested_correlation = Button(a, text="Взаимная корелляция",

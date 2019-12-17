@@ -181,7 +181,26 @@ class Analysis:
     def calculation_nested_correlation(self, model_1, model_2):
 
         model = Model(9)  # Модель графика взаимной корреляция
-        model.y = np.correlate(model_1.y, model_2.y, mode="full")
+
+        y_list_1 = copy.deepcopy(model_1.y)
+        self.calculation_average_value()
+        average_value1 = self.average_value
+
+        y_list_2 = copy.deepcopy(model_2.y)
+        self.calculation_average_value()
+        average_value2 = self.average_value
+
+        y = []
+        n = model_1.n
+        for i in range(self.l):
+            new_value = 0
+
+            for j in range(n-i):
+                new_value += (y_list_1[j] - average_value1) * (y_list_2[j+ i] - average_value2)
+            new_value = new_value / n
+            y.append(new_value)
+
+        model.y = np.array(y)
         model.n = len(model.y)
         model.x = np.arange(model.n)
 
