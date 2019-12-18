@@ -3,6 +3,7 @@ import copy
 
 import numpy as np
 from model import Model
+import scipy.stats as sci
 
 
 class Analysis:
@@ -67,7 +68,7 @@ class Analysis:
     def calculation_standard_deviation(self):
 
         if self.dispersion == 0:  # Если не была расчитана диспресия
-            self.calculation_dispersion(1)
+            self.calculation_dispersion()
 
         self.standard_deviation = math.sqrt(self.dispersion)
 
@@ -81,8 +82,9 @@ class Analysis:
 
         sum_of_values = 0
 
+        y = self.model.y.tolist()
         for i in range(self.model.n):
-            temp_value = (self.model.y[i] - self.average_value)
+            temp_value = (y[i] - self.average_value)
             temp_value = temp_value * temp_value * temp_value
             sum_of_values = sum_of_values + temp_value
 
