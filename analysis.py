@@ -41,11 +41,16 @@ class Analysis:
         if self.average_value ==0:
             self.calculation_average_value()
 
+        """
         dispersion = 0
-        for i in range(self.model.n):
+        n = self.model.n - 2
+        for i in range(n):
             dispersion += (self.model.y[i] - self.average_value) * (self.model.y[i] - self.average_value)
 
         self.dispersion = dispersion / self.model.n
+        """
+
+        self.dispersion = np.var(self.model.y)
 
         for i in range(len(self.model.y_gaps_10)):
             y = copy.deepcopy(self.model.y_gaps_10[i])
